@@ -1,0 +1,42 @@
+﻿@page "/users"
+@using Microsoft.AspNetCore.Identity;
+@using SupportDashAI.Application.Services;
+@using SupportDashAI.Contracts.Consts;
+@using SupportDashAI.Contracts.Dto;
+@inject UserManager<IdentityUser> userManager
+@inject NavigationManager Navigation
+
+<PageTitle>Settings</PageTitle>
+
+<h1>Settings</h1>
+
+<p>This component demonstrates settings management.</p>
+
+<hr />
+
+
+@if (loading == false)
+{
+    <p>loading...</p>
+}
+else
+{
+    
+}
+
+<hr />
+
+@code {
+    bool loading = false;
+    List<IdentityUser> Users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected async Task Save(string key, string value)
+    {
+    }
+
+}

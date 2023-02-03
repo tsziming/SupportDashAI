@@ -1,0 +1,53 @@
+﻿@page "/create-product"
+@using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+@using SupportDashAI.Application.Services.Catalog;
+@using SupportDashAI.Contracts.Dto.Catalog;
+@inject NavigationManager Navigation
+@inject ProductAppService ProductAppService
+@inject CategoryAppService CategoryAppService
+
+<PageTitle>Create Product</PageTitle>
+
+<h1>Create Product</h1>
+
+<p>This component demonstrates creating product.</p>
+
+
+<EditForm Model="@productModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h3>Name</h3>
+    <InputText id="name" @bind-Value="productModel.Name" />
+    <h3>Identifier</h3>
+    <InputText id="identifier" @bind-Value="productModel.Identifier" />
+    <h3>Description</h3>
+    <InputText id="description" @bind-Value="productModel.Description" />
+    <h3>Category</h3>
+    <InputSelect id="categoryId" @bind-Value="productModel.CategoryId">
+        @foreach (var category in categories)
+        {
+            <option value="@category.Id">@category.Name</option>
+        }
+    </InputSelect>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code {
+    private UpdateProductDto productModel = new();
+    private IEnumerable<CategoryDto> categories = new List<CategoryDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryAppService.GetAll();
+        productModel.CategoryId = categories.FirstOrDefault()?.Id;
+    }
+
+    private async Task HandleSubmit()
+    {
+        await ProductAppService.Create(productModel);
+        Navigation.NavigateTo("products");
+        // Process the form
+    }
+}

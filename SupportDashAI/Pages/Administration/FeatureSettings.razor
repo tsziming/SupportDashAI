@@ -1,0 +1,107 @@
+﻿@page "/feature-settings"
+@using SupportDashAI.Application.Services;
+@using SupportDashAI.Contracts.Consts;
+@using SupportDashAI.Contracts.Dto;
+@inject FeatureSettingAppService FeatureSettingAppService
+@inject NavigationManager Navigation
+
+<PageTitle>Settings</PageTitle>
+
+<h1>Settings</h1>
+
+<p>This component demonstrates settings management.</p>
+
+<hr />
+
+
+@if (loading == false)
+{
+    <p>loading...</p>
+}
+else
+{
+    @foreach (var template in FeatureSettingsConsts.Templates)
+    {
+        var editing = Editing.Contains(template.Key);
+        <h3>@template.Name</h3>
+        <p><i>@template.Description</i></p>
+
+        @if (editing)
+        {
+
+            switch (template.Type)
+            {
+                case FeatureSettingType.Boolean:
+                    <input type="checkbox" 
+                        @oninput="(e) => Settings[template.Key] = e.Value.ToString()"
+                        checked="@Convert.ToBoolean(Settings[template.Key])" />
+                    break;
+                case FeatureSettingType.Number:
+                    <input type="number" 
+                        @oninput="(e) => Settings[template.Key] = e.Value.ToString()"
+                        checked="@Convert.ToInt32(Settings[template.Key])" />
+                    break;
+                default:
+                    <input type="text" id="value" @bind="@Settings[template.Key]" />
+                    break;
+            }
+
+            <button @onclick="() => Save(template.Key, Settings[template.Key])">Save</button>
+        }
+        else
+        {
+            switch (template.Type)
+            {
+                case FeatureSettingType.Boolean:
+                    <input type="checkbox" checked="@Convert.ToBoolean(Settings[template.Key])" disabled />
+                    break;
+                default:
+                    @if (@Settings[template.Key] != string.Empty)
+                    {
+                        <p>@Settings[template.Key]</p>
+                    }
+                    else
+                    {
+                        <p>Not specified</p>
+                    }
+                    break;
+            }
+
+            <button @onclick="() => Editing.Add(template.Key)">Edit</button>
+        }
+    }
+}
+
+<hr />
+
+@code {
+    bool loading = false;
+    Dictionary<string, string> Settings { get; set; } = new();
+    List<string> Editing { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var template in FeatureSettingsConsts.Templates)
+        {
+            var value = await FeatureSettingAppService.Get(template.Key, null);
+            if (value == null)
+            {
+                value = FeatureSettingsConsts.Defaults[template.Type];
+            }
+            Settings.Add(template.Key, value);
+        }
+        loading = true;
+    }
+
+    protected async Task Save(string key, string value)
+    {
+        var setting = await FeatureSettingAppService.Set(new FeatureSettingDto()
+            {
+                Key = key,
+                Value = value,
+            });
+        Editing.Remove(key);
+        Settings[key] = value;
+    }
+
+}

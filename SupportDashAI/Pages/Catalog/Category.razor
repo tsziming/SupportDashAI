@@ -1,0 +1,67 @@
+﻿@page "/category/{id}"
+@using SupportDashAI.Application.Services.Catalog;
+@using SupportDashAI.Contracts.Dto.Catalog;
+@using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+@inject CategoryAppService CategoryAppService
+@inject NavigationManager Navigation
+
+<PageTitle>Category</PageTitle>
+
+<h1>Category</h1>
+
+<p>This component demonstrates fetching data from a category app service.</p>
+
+<NavLink class="nav-link" href="categories">
+    <span class="oi oi-arrow-circle-left" aria-hidden="true"></span> Back
+</NavLink>
+
+@if (Id != null && category == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (Id == null)
+{
+    <p>Category Not Found</p>
+}
+else
+{
+    <EditForm Model="@category" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputText id="name" @bind-Value="category.Name" />
+        <InputText id="description" @bind-Value="category.Description" />
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    CategoryDto category { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var id = Guid.Parse(Id);
+            category = await CategoryAppService.Get(id);
+        }
+        catch (Exception ex)
+        {
+            category = null;
+        }
+    }
+
+    protected async Task Remove(Guid? id)
+    {
+        await CategoryAppService.Delete((Guid)id);
+        Navigation.NavigateTo("categories");
+    }
+    private async Task HandleSubmit()
+    {
+        await CategoryAppService.Update(category);
+        Navigation.NavigateTo("categories");
+        // Process the form
+    }
+}

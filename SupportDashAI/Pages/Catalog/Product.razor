@@ -1,0 +1,84 @@
+﻿@page "/product/{id}"
+@using AutoMapper;
+@using SupportDashAI.Application.Services.Catalog;
+@using SupportDashAI.Contracts.Dto.Catalog;
+@using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+@inject ProductAppService ProductAppService
+@inject CategoryAppService CategoryAppService
+@inject NavigationManager Navigation
+@inject IMapper Mapper
+
+<PageTitle>Product</PageTitle>
+
+<h1>Product</h1>
+
+<p>This component demonstrates fetching data from a product app service.</p>
+
+<NavLink class="nav-link" href="products">
+    <span class="oi oi-arrow-circle-left" aria-hidden="true"></span> Back
+</NavLink>
+
+@if (Id != null && product == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (Id == null)
+{
+    <p>Product Not Found</p>
+}
+else
+{
+    <EditForm Model="@product" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h3>Name</h3>
+        <InputText id="name" @bind-Value="product.Name" />
+        <h3>Identifier</h3>
+        <InputText id="identifier" @bind-Value="product.Identifier" />
+        <h3>Description</h3>
+        <InputText id="description" @bind-Value="product.Description" />
+        <h3>Category</h3>
+        <InputSelect id="category" @bind-Value="product.CategoryId">
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    UpdateProductDto product { get; set; }
+    IEnumerable<CategoryDto> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryAppService.GetList(0, "");
+        try
+        {
+            var id = Guid.Parse(Id);
+            var productDto = await ProductAppService.Get(id);
+            product = Mapper.Map<ProductDto, UpdateProductDto>(productDto);
+        }
+        catch (Exception ex)
+        {
+            product = null;
+        }
+    }
+
+    protected async Task Remove(Guid? id)
+    {
+        await ProductAppService.Delete((Guid) id);
+        Navigation.NavigateTo("products");
+    }
+    private async Task HandleSubmit()
+    {
+        await ProductAppService.Update(product);
+        Navigation.NavigateTo("products");
+        // Process the form
+    }
+}

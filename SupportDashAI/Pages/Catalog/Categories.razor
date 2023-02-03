@@ -1,0 +1,60 @@
+﻿@page "/categories"
+@using SupportDashAI.Application.Services.Catalog;
+@using SupportDashAI.Contracts.Dto.Catalog;
+@inject CategoryAppService CategoryAppService
+
+<PageTitle>Categorys</PageTitle>
+
+<h1>Categorys</h1>
+
+<p>This component demonstrates fetching data from a category app service.</p>
+
+<NavLink class="nav-link" href="create-category">
+    <span class="oi oi-plus" aria-hidden="true"></span> Create Category
+</NavLink>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <button @onclick="() => Remove(category.Id)">Remove</button>
+                        <NavLink class="nav-link" href="@("category/"+category.Id)">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit Category
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<CategoryDto> categories;
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryAppService.GetList(0, "");
+    }
+
+    protected async Task Remove(Guid? id)
+    {
+        await CategoryAppService.Delete((Guid)id);
+        categories = await CategoryAppService.GetList(0, "");
+    }
+}

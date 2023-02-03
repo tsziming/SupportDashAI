@@ -1,0 +1,64 @@
+﻿@page "/products"
+@using SupportDashAI.Application.Services.Catalog;
+@using SupportDashAI.Contracts.Dto.Catalog;
+@inject ProductAppService ProductAppService
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component demonstrates fetching data from a product app service.</p>
+
+<NavLink class="nav-link" href="create-product">
+    <span class="oi oi-plus" aria-hidden="true"></span> Create Product
+</NavLink>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Identifier</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Identifier</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Category?.Name</td>
+                    <td>
+                        <button @onclick="() => Remove(product.Id)">Remove</button>
+                        <NavLink class="nav-link" href="@("product/"+product.Id)">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit Product
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<ProductDto> products;
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductAppService.GetList(0, "");
+    }
+
+    protected async Task Remove(Guid? id)
+    {
+        await ProductAppService.Delete((Guid)id);
+        products = await ProductAppService.GetList(0, "");
+    }
+}
