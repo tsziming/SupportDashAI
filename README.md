@@ -9,7 +9,7 @@
 ## Short Description.
 SupportDash AI is an innovative platform designed to provide companies and enterprises with a robust customer service and communication solution. Thanks to its advanced API and sockets for adapters and communication as well as its Blazor-based UI, SupportDash AI provides a quality user-experience for both support employees and customers.
 
-The platform offers a number of features, such as the ability to send and receive messages from various sources, provide three possible AI responses, provide brief descriptions of customers and categories of interest, and provide product history and notes.
+The platform offers a number of features, such as the ability to send and receive messages from various sources, provide brief descriptions of customers and categories of interest, and provide product history and notes.
 For demonstration purposes, SupportDash AI also provides a web demo and Telegram app for customers to get started. 
 
 The main objective of SupportDashAI is to form a personalized picture of customer interests based on their feedback and to generate, store and make recommendations to customer support (e.g., possible options to respond to a customer) by preparing information and analyzing customer requests using OpenAI's linguistic models. I believe that this approach not only stimulates lead generation but also supports old customers.
