@@ -4,6 +4,8 @@
 
 > !!! IMPORTANT !!! the project is in development process, IT IS NOT READY YET 
 
+![](https://github.com/tsziming/SupportDashAI/blob/master/docs/SupportDashAILogo.png?raw=true)
+
 ## Short Description.
 SupportDash AI is an innovative platform designed to provide companies and enterprises with a robust customer service and communication solution. Thanks to its advanced API and sockets for adapters and communication as well as its Blazor-based UI, SupportDash AI provides a quality user-experience for both support employees and customers.
 
@@ -12,7 +14,9 @@ For demonstration purposes, SupportDash AI also provides a web demo and Telegram
 
 The main objective of SupportDashAI is to form a personalized picture of customer interests based on their feedback and to generate, store and make recommendations to customer support (e.g., possible options to respond to a customer) by preparing information and analyzing customer requests using OpenAI's linguistic models. I believe that this approach not only stimulates lead generation but also supports old customers.
 
-## Architecture
+## Common Architecture
+
+![](https://github.com/tsziming/SupportDashAI/blob/master/docs/ArchitectureDiagram.png?raw=true)
 
 SupportDashAI has a microservice architecture and consists of some parts and layers:
 1. Dashboard for customer support employees (backend and frontend). ASP.NET Core Blazor server.
@@ -24,8 +28,11 @@ Customers use messengers, emails, sms, web chats in our online stores to communi
 3. Adapters
 As we mentioned in the previous paragraph, in order to collect each event in our deshboard, we need it to have endpoints that must be "open" for communication. To connect these endpoints with information from the data sources, we use adapters. For the demonstration project, we will make two of them, web chat and telegram. 
 4. DDD logic.
-The most important part of the program. It contains the logic, built using the modern approach - Domain Driven Design. This part sends emails, interacts with OpenAI Api, performs operations with database and all other things that is implied as ***business logic***.
- 5. OpenAI
+The most important part of the program. It contains the logic, built using the modern approach - Domain Driven Design. This part sends emails, interacts with OpenAI Api, performs operations with database and all other things that is implied as ***business logic***. See preview to get the idea:
+
+![](https://github.com/tsziming/SupportDashAI/blob/master/docs/SolutionDemo.png?raw=true)
+
+5. OpenAI
 For the AI part of the logic, we use OpenAI as a platform to process, analyze, predict, generate recommendations, etc.. 
 6. Database (SQL Server).
 Since we use Entity Framework Core, we don't have to worry about the exact database choice, so the default option is Microsoft SQL Server.
@@ -48,6 +55,16 @@ Since we use Entity Framework Core, we don't have to worry about the exact datab
 ⦁ Products - this function allows the user to access the products.
 ⦁ Categories - this function allows the user to access the categories.
 4. Adapters, namely web demo application, possible Telegram application - this function gives the user access to the web demo application as well as the possible Telegram application.
+
+## Roadmap
+
+- [x] Create Project Structure
+- [ ] Create DDD UML Diagram
+- [ ] Implement Dashboard Features with Mocked AI
+- [ ] Add MudBlazor for Dashboard UI 
+- [ ] Create API & SignalR Endpoints
+- [ ] Create Telegram and Web Demo Adapters
+- [ ] Implement AI Business Logic
 
 ## Credits
 
